@@ -33,11 +33,13 @@ def create_app() -> Flask:
     # Extensions
     db.init_app(app)
     migrate.init_app(app, db)
-    from . import models  # noqa: F401
+    # from . import models  # noqa: F401
 
     # Blueprints
     from .routes.health import health_bp
+    from .routes.recipes import recipes_bp
 
     app.register_blueprint(health_bp, url_prefix="/api")
+    app.register_blueprint(recipes_bp, url_prefix="/api")
 
     return app
