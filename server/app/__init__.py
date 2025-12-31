@@ -38,8 +38,14 @@ def create_app() -> Flask:
     # Blueprints
     from .routes.health import health_bp
     from .routes.recipes import recipes_bp
+    from .routes.meal_plans import meal_plans_bp
+    from .routes.meal_groups import meal_groups_bp
+    from .routes.group_recipes import group_recipes_bp
 
     app.register_blueprint(health_bp, url_prefix="/api")
     app.register_blueprint(recipes_bp, url_prefix="/api")
+    app.register_blueprint(meal_plans_bp, url_prefix="/api")
+    app.register_blueprint(meal_groups_bp, url_prefix="/api")
+    app.register_blueprint(group_recipes_bp, url_prefix="/api")
 
     return app
