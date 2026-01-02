@@ -2,6 +2,7 @@ import os
 
 from flask import Flask
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 from .extensions import db, migrate
 
@@ -29,6 +30,13 @@ def create_app() -> Flask:
             "DATABASE_URL",
             f"sqlite:///{os.path.join(app.instance_path, 'mealflo.db')}",
         )
+
+    CORS(
+        app,
+        resources={
+            r"/api/*": {"origins": ["http://127.0.0.1:5173", "http://localhost:5173"]}
+        },
+    )
 
     # Extensions
     db.init_app(app)
