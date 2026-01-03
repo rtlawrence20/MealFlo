@@ -18,6 +18,10 @@ import { http } from "./http.js";
  * @property {string} title
  * @property {string|null} description
  * @property {number} servings
+ * @property {number|null} [prepMin]
+ * @property {number|null} [cookMin]
+ * @property {string|null} [instructions]
+ * @property {string|null} [notes]
  * @property {string} createdAt
  * @property {string} updatedAt
  * @property {RecipeIngredient[]} [ingredients]
@@ -28,6 +32,10 @@ import { http } from "./http.js";
  * @property {string} title
  * @property {string|null} [description]
  * @property {number} [servings]
+ * @property {number|null} [prepMin]
+ * @property {number|null} [cookMin]
+ * @property {string|null} [instructions]
+ * @property {string|null} [notes]
  * @property {RecipeIngredient[]} [ingredients]
  */
 
@@ -36,6 +44,10 @@ import { http } from "./http.js";
  * @property {string} [title]
  * @property {string|null} [description]
  * @property {number} [servings]
+ * @property {number|null} [prepMin]
+ * @property {number|null} [cookMin]
+ * @property {string|null} [instructions]
+ * @property {string|null} [notes]
  * @property {RecipeIngredient[]} [ingredients]
  */
 

@@ -129,6 +129,23 @@ export default function Recipes() {
                                     <Text size="sm" c="dimmed">
                                         Servings: {r.servings}
                                     </Text>
+                                    <Text size="sm" c="dimmed">
+                                        Prep: {r.prepMin ? `${r.prepMin}m` : "—"} • Cook: {r.cookMin ? `${r.cookMin}m` : "—"}
+                                    </Text>
+
+                                    {r.instructions ? (
+                                        <Text size="sm" style={{ whiteSpace: "pre-wrap" }}>
+                                            <Text span fw={600}>Instructions: </Text>
+                                            {r.instructions}
+                                        </Text>
+                                    ) : null}
+
+                                    {r.notes ? (
+                                        <Text size="sm" c="dimmed" style={{ whiteSpace: "pre-wrap" }}>
+                                            <Text span fw={600}>Notes: </Text>
+                                            {r.notes}
+                                        </Text>
+                                    ) : null}
                                 </Stack>
 
                                 <ActionIcon
@@ -158,7 +175,7 @@ export default function Recipes() {
                     onCancel={() => setCreateOpen(false)}
                 />
             </Modal>
-            
+
             <CsvImportModal
                 opened={importOpen}
                 onClose={() => setImportOpen(false)}
