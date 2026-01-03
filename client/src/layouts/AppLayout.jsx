@@ -1,5 +1,8 @@
 import { Outlet, NavLink } from "react-router-dom";
-import { AppShell, Group, Anchor, Text, Container } from "@mantine/core";
+import { Button, AppShell, Group, Anchor, Text, Container } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx";
+
 
 const navLinkStyle = ({ isActive }) => ({
     textDecoration: "none",
@@ -8,6 +11,9 @@ const navLinkStyle = ({ isActive }) => ({
 });
 
 export default function AppLayout() {
+    const navigate = useNavigate();
+    const { user, logout } = useAuth();
+
     return (
         <AppShell
             header={{ height: 56 }}
@@ -38,6 +44,23 @@ export default function AppLayout() {
                             Shopping
                         </Anchor>
                     </Group>
+
+                    <Group gap="sm">
+                        <Text size="sm" c="dimmed">
+                            {user?.username}
+                        </Text>
+                        <Button
+                            size="xs"
+                            variant="light"
+                            onClick={async () => {
+                                await logout();
+                                navigate("/login", { replace: true });
+                            }}
+                        >
+                            Logout
+                        </Button>
+                    </Group>
+
                 </Group>
             </AppShell.Header>
 
