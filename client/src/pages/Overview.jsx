@@ -17,6 +17,18 @@ export default function Overview() {
     const [payload, setPayload] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [openRecipeIds, setOpenRecipeIds] = useState(() => new Set());
+    const [openIngredientIds, setOpenIngredientIds] = useState(() => new Set());
+
+
+    function toggleIngredients(recipeId) {
+        setOpenIngredientIds((prev) => {
+            const next = new Set(prev);
+            if (next.has(recipeId)) next.delete(recipeId);
+            else next.add(recipeId);
+            return next;
+        });
+    }
+
 
     const mealGroups = useMemo(() => {
         if (!payload?.mealGroups) return [];
@@ -76,7 +88,7 @@ export default function Overview() {
             </Stack>
         );
     }
-    
+
     return (
         <Stack gap="md">
             <Stack gap={2}>
@@ -127,19 +139,49 @@ export default function Overview() {
                                                         </Text>
                                                     </Stack>
 
-                                                    <Button
-                                                        size="xs"
-                                                        variant="light"
-                                                        rightSection={
-                                                            isOpen
-                                                                ? <IconChevronUp size={14} />
-                                                                : <IconChevronDown size={14} />
-                                                        }
-                                                        onClick={() => toggleRecipe(recipeId)}
-                                                    >
-                                                        {isOpen ? "Hide" : "Instructions"}
-                                                    </Button>
+                                                    <Group gap="xs">
+                                                        <Button
+                                                            size="xs"
+                                                            variant="light"
+                                                            onClick={() => toggleIngredients(recipeId)}
+                                                        >
+                                                            Ingredients
+                                                        </Button>
+
+                                                        <Button
+                                                            size="xs"
+                                                            variant="light"
+                                                            rightSection={isOpen ? <IconChevronUp size={14} /> : <IconChevronDown size={14} />}
+                                                            onClick={() => toggleRecipe(recipeId)}
+                                                        >
+                                                            {isOpen ? "Hide" : "Instructions"}
+                                                        </Button>
+                                                    </Group>
                                                 </Group>
+
+                                                <Collapse in={openIngredientIds.has(recipeId)}>
+                                                    <Stack gap={4} pt="xs">
+                                                        {!recipe.ingredients || recipe.ingredients.length === 0 ? (
+                                                            <Text size="sm" c="dimmed">
+                                                                No ingredients listed.
+                                                            </Text>
+                                                        ) : (
+                                                            <>
+                                                                <Text fw={600} size="sm">
+                                                                    Ingredients
+                                                                </Text>
+                                                                {recipe.ingredients.map((ing) => (
+                                                                    <Text key={ing.id} size="sm">
+                                                                        • {ing.quantity ?? ""}{" "}
+                                                                        {ing.unit ?? ""}{" "}
+                                                                        {ing.name}
+                                                                        {ing.notes ? ` (${ing.notes})` : ""}
+                                                                    </Text>
+                                                                ))}
+                                                            </>
+                                                        )}
+                                                    </Stack>
+                                                </Collapse>
 
                                                 <Collapse in={isOpen}>
                                                     <Stack gap={6} pt="xs">
