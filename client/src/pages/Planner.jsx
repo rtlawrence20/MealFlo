@@ -38,6 +38,10 @@ export default function Planner() {
     const [selectedRecipeId, setSelectedRecipeId] = useState("");
     const [plannedServings, setPlannedServings] = useState(1);
 
+    const [copyOpen, setCopyOpen] = useState(false);
+    const [copyTargetDate, setCopyTargetDate] = useState(() => new Date());
+
+
     const weekStartIso = useMemo(() => {
         const monday = getWeekStartMonday(selectedDate);
         return toIsoDate(monday);
@@ -207,6 +211,10 @@ export default function Planner() {
                     valueFormat="MMM D, YYYY"
                     maw={220}
                 />
+                <Button variant="light" onClick={() => setCopyOpen(true)} disabled={!week?.id}>
+                    Copy week
+                </Button>
+
             </Group>
 
             {isLoading ? (
@@ -318,6 +326,45 @@ export default function Planner() {
                         </Button>
                         <Button onClick={handleAddRecipe} disabled={!selectedRecipeId}>
                             Add
+                        </Button>
+                    </Group>
+                </Stack>
+            </Modal>
+
+            <Modal opened={copyOpen} onClose={() => setCopyOpen(false)} title="Copy this week" centered>
+                <Stack gap="md">
+                    <DateInput
+                        label="Copy to week of"
+                        value={copyTargetDate}
+                        onChange={(d) => setCopyTargetDate(d || new Date())}
+                        valueFormat="MMM D, YYYY"
+                    />
+
+                    <Group justify="flex-end">
+                        <Button variant="subtle" onClick={() => setCopyOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={async () => {
+                                try {
+                                    const targetStart = toIsoDate(getWeekStartMonday(copyTargetDate));
+                                    await plannerService.copyWeek(week.id, { weekStart: targetStart });
+                                    notifications.show({
+                                        title: "Week copied",
+                                        message: `Copied to ${targetStart}.`,
+                                    });
+                                    setCopyOpen(false);
+                                } catch (err) {
+                                    notifications.show({
+                                        title: "Copy failed",
+                                        message: err?.message || "Unknown error",
+                                        color: "red",
+                                    });
+                                }
+                            }}
+                            disabled={!week?.id}
+                        >
+                            Copy
                         </Button>
                     </Group>
                 </Stack>
