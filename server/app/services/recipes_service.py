@@ -77,6 +77,17 @@ def update_recipe(recipe: Recipe, payload: dict) -> Recipe:
                     sort_order=idx,
                 )
             )
+    if "prepMin" in payload:
+        recipe.prep_min = payload["prepMin"]
+
+    if "cookMin" in payload:
+        recipe.cook_min = payload["cookMin"]
+
+    if "instructions" in payload:
+        recipe.instructions = payload["instructions"]
+
+    if "notes" in payload:
+        recipe.notes = payload["notes"]
 
     db.session.commit()
     return recipe
