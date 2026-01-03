@@ -50,6 +50,7 @@ def create_app() -> Flask:
     from .routes.meal_groups import meal_groups_bp
     from .routes.group_recipes import group_recipes_bp
     from .routes.shopping import shopping_bp
+    from .routes.recipes_import import recipes_import_bp
 
     app.register_blueprint(health_bp, url_prefix="/api")
     app.register_blueprint(recipes_bp, url_prefix="/api")
@@ -57,5 +58,6 @@ def create_app() -> Flask:
     app.register_blueprint(meal_groups_bp, url_prefix="/api")
     app.register_blueprint(group_recipes_bp, url_prefix="/api")
     app.register_blueprint(shopping_bp, url_prefix="/api")
+    app.register_blueprint(recipes_import_bp, url_prefix="/api")
 
     return app

@@ -15,6 +15,7 @@ import { IconPlus, IconTrash } from "@tabler/icons-react";
 
 import { recipesService } from "../services/recipes.service.js";
 import RecipeForm from "../components/RecipeForm.jsx";
+import CsvImportModal from "../components/CsvImportModal.jsx";
 
 export default function Recipes() {
     const [recipes, setRecipes] = useState([]);
@@ -22,6 +23,7 @@ export default function Recipes() {
     const [isLoading, setIsLoading] = useState(true);
 
     const [createOpen, setCreateOpen] = useState(false);
+    const [importOpen, setImportOpen] = useState(false);
 
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();
@@ -97,9 +99,14 @@ export default function Recipes() {
                     </Text>
                 </Stack>
 
-                <Button leftSection={<IconPlus size={16} />} onClick={() => setCreateOpen(true)}>
-                    New Recipe
-                </Button>
+                <Group gap="sm">
+                    <Button variant="light" onClick={() => setImportOpen(true)}>
+                        Import CSV
+                    </Button>
+                    <Button leftSection={<IconPlus size={16} />} onClick={() => setCreateOpen(true)}>
+                        New Recipe
+                    </Button>
+                </Group>
             </Group>
 
             <TextInput
@@ -151,6 +158,12 @@ export default function Recipes() {
                     onCancel={() => setCreateOpen(false)}
                 />
             </Modal>
+            
+            <CsvImportModal
+                opened={importOpen}
+                onClose={() => setImportOpen(false)}
+                onImported={loadRecipes}
+            />
         </Stack>
     );
 }
