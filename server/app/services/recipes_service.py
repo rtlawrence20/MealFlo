@@ -33,6 +33,10 @@ def create_recipe(user_id: int, payload: dict) -> Recipe:
         title=title.strip(),
         description=payload.get("description"),
         servings=servings,
+        prep_min=payload.get("prepMin"),
+        cook_min=payload.get("cookMin"),
+        instructions=payload.get("instructions"),
+        notes=payload.get("notes"),
     )
 
     for idx, ing in enumerate(ingredients):

@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-
 from app.extensions import db
 
 
@@ -18,6 +17,10 @@ class Recipe(db.Model):
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=True)
     servings = db.Column(db.Integer, nullable=False, default=1)
+    prep_min = db.Column(db.Integer, nullable=True)
+    cook_min = db.Column(db.Integer, nullable=True)
+    instructions = db.Column(db.Text, nullable=True)
+    notes = db.Column(db.Text, nullable=True)
 
     created_at = db.Column(
         db.DateTime(timezone=True),
@@ -55,6 +58,10 @@ class Recipe(db.Model):
             "title": self.title,
             "description": self.description,
             "servings": self.servings,
+            "prepMin": self.prep_min,
+            "cookMin": self.cook_min,
+            "instructions": self.instructions,
+            "notes": self.notes,
             "createdAt": self.created_at.isoformat(),
             "updatedAt": self.updated_at.isoformat(),
         }
