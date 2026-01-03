@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, session
 
 from app.services.recipes_service import (
     get_all_recipes,
@@ -7,22 +7,24 @@ from app.services.recipes_service import (
     update_recipe,
     delete_recipe,
 )
+from app.routes._auth_guard import login_required
 
 recipes_bp = Blueprint("recipes", __name__)
 
-# TEMP: dev-only user stub
-DEV_USER_ID = 1
-
 
 @recipes_bp.get("/recipes")
+@login_required
 def list_recipes():
-    recipes = get_all_recipes(DEV_USER_ID)
+    user_id = session["user_id"]
+    recipes = get_all_recipes(user_id)
     return jsonify([r.to_dict() for r in recipes])
 
 
 @recipes_bp.get("/recipes/<int:recipe_id>")
+@login_required
 def get_recipe(recipe_id: int):
-    recipe = get_recipe_by_id(recipe_id, DEV_USER_ID)
+    user_id = session["user_id"]
+    recipe = get_recipe_by_id(recipe_id, user_id)
     if not recipe:
         return jsonify({"error": "Recipe not found"}), 404
 
@@ -30,17 +32,21 @@ def get_recipe(recipe_id: int):
 
 
 @recipes_bp.post("/recipes")
+@login_required
 def create_recipe_route():
+    user_id = session["user_id"]
     try:
-        recipe = create_recipe(DEV_USER_ID, request.get_json() or {})
+        recipe = create_recipe(user_id, request.get_json() or {})
         return jsonify(recipe.to_dict(include_ingredients=True)), 201
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
 
 @recipes_bp.patch("/recipes/<int:recipe_id>")
+@login_required
 def update_recipe_route(recipe_id: int):
-    recipe = get_recipe_by_id(recipe_id, DEV_USER_ID)
+    user_id = session["user_id"]
+    recipe = get_recipe_by_id(recipe_id, user_id)
     if not recipe:
         return jsonify({"error": "Recipe not found"}), 404
 
@@ -49,8 +55,10 @@ def update_recipe_route(recipe_id: int):
 
 
 @recipes_bp.delete("/recipes/<int:recipe_id>")
+@login_required
 def delete_recipe_route(recipe_id: int):
-    recipe = get_recipe_by_id(recipe_id, DEV_USER_ID)
+    user_id = session["user_id"]
+    recipe = get_recipe_by_id(recipe_id, user_id)
     if not recipe:
         return jsonify({"error": "Recipe not found"}), 404
 

@@ -62,6 +62,7 @@ async function throwApiError(res) {
 export async function request(method, path, body) {
     const res = await fetch(buildUrl(path), {
         method,
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },

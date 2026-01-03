@@ -4,7 +4,7 @@ from flask import Flask
 from dotenv import load_dotenv
 from flask_cors import CORS
 
-from .extensions import db, migrate
+from .extensions import db, migrate, bcrypt
 
 
 def create_app() -> Flask:
@@ -36,12 +36,13 @@ def create_app() -> Flask:
         resources={
             r"/api/*": {"origins": ["http://127.0.0.1:5173", "http://localhost:5173"]}
         },
+        supports_credentials=True,
     )
 
     # Extensions
     db.init_app(app)
     migrate.init_app(app, db)
-    # from . import models  # noqa: F401
+    bcrypt.init_app(app)
 
     # Blueprints
     from .routes.health import health_bp
@@ -51,6 +52,7 @@ def create_app() -> Flask:
     from .routes.group_recipes import group_recipes_bp
     from .routes.shopping import shopping_bp
     from .routes.recipes_import import recipes_import_bp
+    from .routes.auth import auth_bp
 
     app.register_blueprint(health_bp, url_prefix="/api")
     app.register_blueprint(recipes_bp, url_prefix="/api")
@@ -59,5 +61,6 @@ def create_app() -> Flask:
     app.register_blueprint(group_recipes_bp, url_prefix="/api")
     app.register_blueprint(shopping_bp, url_prefix="/api")
     app.register_blueprint(recipes_import_bp, url_prefix="/api")
+    app.register_blueprint(auth_bp, url_prefix="/api/auth")
 
     return app
