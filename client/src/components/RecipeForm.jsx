@@ -25,6 +25,11 @@ export default function RecipeForm({
     const [servings, setServings] = useState(initialValue?.servings ?? 1);
     const [ingredients, setIngredients] = useState(initialValue?.ingredients || []);
     const [isSaving, setIsSaving] = useState(false);
+    const [prepMin, setPrepMin] = useState(initialValue?.prepMin ?? null);
+    const [cookMin, setCookMin] = useState(initialValue?.cookMin ?? null);
+    const [instructions, setInstructions] = useState(initialValue?.instructions || "");
+    const [notes, setNotes] = useState(initialValue?.notes || "");
+
 
     const canSubmit = useMemo(() => title.trim().length > 0, [title]);
 
@@ -38,6 +43,10 @@ export default function RecipeForm({
                 title: title.trim(),
                 description: description.trim() ? description.trim() : null,
                 servings: servings || 1,
+                prepMin: prepMin ?? null,
+                cookMin: cookMin ?? null,
+                instructions: instructions.trim() ? instructions.trim() : null,
+                notes: notes.trim() ? notes.trim() : null,
                 ingredients: (ingredients || [])
                     .filter((i) => (i.name || "").trim().length > 0)
                     .map((i, idx) => ({
@@ -71,6 +80,18 @@ export default function RecipeForm({
                         value={servings}
                         onChange={(val) => setServings(val || 1)}
                     />
+                    <NumberInput
+                        label="Prep time (minutes)"
+                        min={0}
+                        value={prepMin}
+                        onChange={setPrepMin}
+                    />
+                    <NumberInput
+                        label="Cook time (minutes)"
+                        min={0}
+                        value={cookMin}
+                        onChange={setCookMin}
+                    />
                 </Group>
 
                 <Textarea
@@ -78,6 +99,24 @@ export default function RecipeForm({
                     placeholder="Optional notes"
                     value={description}
                     onChange={(e) => setDescription(e.currentTarget.value)}
+                    autosize
+                    minRows={2}
+                />
+
+                <Textarea
+                    label="Instructions"
+                    placeholder="Step-by-step cooking instructions"
+                    value={instructions}
+                    onChange={(e) => setInstructions(e.currentTarget.value)}
+                    autosize
+                    minRows={4}
+                />
+
+                <Textarea
+                    label="Notes"
+                    placeholder="Personal notes, substitutions, reminders"
+                    value={notes}
+                    onChange={(e) => setNotes(e.currentTarget.value)}
                     autosize
                     minRows={2}
                 />
