@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 
 from app.services.meal_plans_service import get_or_create_week, get_week_by_id
+from app.services.meal_plans_service import copy_week
 
 meal_plans_bp = Blueprint("meal_plans", __name__)
 
@@ -25,3 +26,14 @@ def get_week(week_id: int):
         return jsonify({"error": "Week not found"}), 404
 
     return jsonify(week.to_dict(include_groups=True))
+
+
+@meal_plans_bp.post("/meal-plans/weeks/<int:week_id>/copy")
+def copy_week_route(week_id: int):
+    body = request.get_json() or {}
+    week_start = body.get("weekStart")
+    try:
+        target = copy_week(DEV_USER_ID, week_id, week_start)
+        return jsonify(target.to_dict(include_groups=True)), 201
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400

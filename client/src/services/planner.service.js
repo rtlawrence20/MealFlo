@@ -117,4 +117,14 @@ export const plannerService = {
     deleteGroupRecipe(groupRecipeId) {
         return http.delete(`/meal-group-recipes/${groupRecipeId}`);
     },
+
+        /**
+     * @param {number} sourceWeekId
+     * @param {{weekStart: string}} payload
+     * @returns {Promise<MealPlanWeek>}
+     */
+    copyWeek(sourceWeekId, payload) {
+        return http.post(`/meal-plans/weeks/${sourceWeekId}/copy`, payload);
+    },
+
 };

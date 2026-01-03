@@ -170,3 +170,50 @@ def delete_group_recipe(user_id: int, group_recipe: MealGroupRecipe) -> None:
 
     db.session.delete(group_recipe)
     db.session.commit()
+
+
+def copy_week(
+    user_id: int, source_week_id: int, target_week_start_iso: str
+) -> MealPlanWeek:
+    source = get_week_by_id(user_id, source_week_id)
+    if not source:
+        raise ValueError("Source week not found")
+
+    target = get_or_create_week(user_id, target_week_start_iso)
+
+    # Clear existing groups in target (so copy is idempotent for demo)
+    for g in list(target.meal_groups):
+        db.session.delete(g)
+    db.session.flush()
+
+    # Build day offset mapping
+    src_start = source.week_start
+    tgt_start = target.week_start
+    day_delta = (tgt_start - src_start).days
+
+    # Copy groups + recipes
+    old_to_new_group = {}
+
+    for g in source.meal_groups:
+        new_group = MealGroup(
+            week_id=target.id,
+            day=g.day + timedelta(days=day_delta),
+            name=g.name,
+            sort_order=g.sort_order,
+        )
+        db.session.add(new_group)
+        db.session.flush()
+        old_to_new_group[g.id] = new_group
+
+        for gr in g.group_recipes:
+            db.session.add(
+                MealGroupRecipe(
+                    meal_group_id=new_group.id,
+                    recipe_id=gr.recipe_id,
+                    planned_servings=gr.planned_servings,
+                    sort_order=gr.sort_order,
+                )
+            )
+
+    db.session.commit()
+    return target
