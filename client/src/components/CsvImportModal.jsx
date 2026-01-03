@@ -42,7 +42,8 @@ export default function CsvImportModal({ opened, onClose, onImported }) {
         <Modal opened={opened} onClose={onClose} title="Import recipes from CSV" centered size="lg">
             <Stack gap="md">
                 <Text size="sm" c="dimmed">
-                    Header columns supported: title, description, servings, ingredient_name (or ingredient), quantity, unit, notes.
+                    Header columns supported: title, description, servings, prep_min (or prepMin), cook_min (or cookMin),
+                    instructions, notes, ingredient_name (or ingredient), quantity, unit.
                     Rows with the same title are grouped into one recipe.
                 </Text>
 

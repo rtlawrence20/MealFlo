@@ -19,6 +19,9 @@ def import_recipes_from_csv_text(user_id: int, csv_text: str) -> dict:
       - quantity (optional)
       - unit (optional)
       - notes (optional)
+      - prep_min OR prepMin (optional)
+      - cook_min OR cookMin (optional)
+      - instructions (optional)
 
     Behavior:
       - Groups rows by title
@@ -43,6 +46,21 @@ def import_recipes_from_csv_text(user_id: int, csv_text: str) -> dict:
                 return row.get(original)
         return None
 
+    def get_any(row: dict, *keys: str):
+        for k in keys:
+            v = get(row, k)
+            if v is not None:
+                return v
+        return None
+
+    def to_int_or_none(raw: str):
+        if not raw:
+            return None
+        try:
+            return int(float(raw))
+        except ValueError:
+            return None
+
     grouped = defaultdict(list)
 
     for row in reader:
@@ -65,11 +83,20 @@ def import_recipes_from_csv_text(user_id: int, csv_text: str) -> dict:
         except ValueError:
             servings = 1
 
+        prep_raw = (get_any(first, "prep_min", "prepmin") or "").strip()
+        cook_raw = (get_any(first, "cook_min", "cookmin") or "").strip()
+        instructions = (get(first, "instructions") or "").strip() or None
+        recipe_notes = (get(first, "notes") or "").strip() or None
+
         recipe = Recipe(
             user_id=user_id,
             title=title,
             description=description,
             servings=servings if servings > 0 else 1,
+            prep_min=to_int_or_none(prep_raw),
+            cook_min=to_int_or_none(cook_raw),
+            instructions=instructions,
+            notes=recipe_notes,
         )
 
         # Ingredient rows
