@@ -148,14 +148,38 @@ export default function Recipes() {
                                     ) : null}
                                 </Stack>
 
-                                <ActionIcon
-                                    variant="subtle"
-                                    color="red"
-                                    onClick={() => handleDelete(r.id)}
-                                    aria-label="Delete recipe"
-                                >
-                                    <IconTrash size={18} />
-                                </ActionIcon>
+                                <Group gap="xs">
+                                    <Button
+                                        size="xs"
+                                        variant={r.isPublic ? "default" : "light"}
+                                        onClick={async () => {
+                                            try {
+                                                if (r.isPublic) await recipesService.unpublish(r.id);
+                                                else await recipesService.publish(r.id);
+
+                                                await loadRecipes();
+                                            } catch (err) {
+                                                notifications.show({
+                                                    title: "Publish failed",
+                                                    message: err?.message || "Unknown error",
+                                                    color: "red",
+                                                });
+                                            }
+                                        }}
+                                    >
+                                        {r.isPublic ? "Unpublish" : "Publish"}
+                                    </Button>
+
+                                    <ActionIcon
+                                        variant="subtle"
+                                        color="red"
+                                        onClick={() => handleDelete(r.id)}
+                                        aria-label="Delete recipe"
+                                    >
+                                        <IconTrash size={18} />
+                                    </ActionIcon>
+                                </Group>
+
                             </Group>
                         </Card>
                     ))}

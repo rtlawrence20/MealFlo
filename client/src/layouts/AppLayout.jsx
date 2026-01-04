@@ -43,6 +43,9 @@ export default function AppLayout() {
                         <Anchor component={NavLink} to="/shopping" style={navLinkStyle}>
                             Shopping
                         </Anchor>
+                        <Anchor component={NavLink} to="/community" style={navLinkStyle}>
+                            Community
+                        </Anchor>
                     </Group>
 
                     <Group gap="sm">

@@ -21,6 +21,7 @@ class Recipe(db.Model):
     cook_min = db.Column(db.Integer, nullable=True)
     instructions = db.Column(db.Text, nullable=True)
     notes = db.Column(db.Text, nullable=True)
+    is_public = db.Column(db.Boolean, nullable=False, default=False)
 
     created_at = db.Column(
         db.DateTime(timezone=True),
@@ -64,6 +65,7 @@ class Recipe(db.Model):
             "notes": self.notes,
             "createdAt": self.created_at.isoformat(),
             "updatedAt": self.updated_at.isoformat(),
+            "isPublic": self.is_public,
         }
         if include_ingredients:
             data["ingredients"] = [i.to_dict() for i in self.ingredients]

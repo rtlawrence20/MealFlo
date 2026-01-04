@@ -91,4 +91,12 @@ export const recipesService = {
     remove(recipeId) {
         return http.delete(`/recipes/${recipeId}`);
     },
+
+    publish(recipeId) {
+        return http.post(`/recipes/${recipeId}/publish`, {});
+    },
+    unpublish(recipeId) {
+        return http.post(`/recipes/${recipeId}/unpublish`, {});
+    },
+
 };
