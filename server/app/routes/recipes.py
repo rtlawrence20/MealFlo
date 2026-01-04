@@ -1,4 +1,7 @@
 from flask import Blueprint, jsonify, request, session
+from app.extensions import db
+from app.models.recipe import Recipe
+from app.routes._auth_guard import login_required
 
 from app.services.recipes_service import (
     get_all_recipes,
@@ -7,7 +10,6 @@ from app.services.recipes_service import (
     update_recipe,
     delete_recipe,
 )
-from app.routes._auth_guard import login_required
 
 recipes_bp = Blueprint("recipes", __name__)
 
@@ -64,3 +66,23 @@ def delete_recipe_route(recipe_id: int):
 
     delete_recipe(recipe)
     return jsonify({"status": "deleted"})
+
+
+@recipes_bp.post("/recipes/<int:recipe_id>/publish")
+@login_required
+def publish_recipe(recipe_id: int):
+    user_id = session["user_id"]
+    recipe = Recipe.query.filter_by(id=recipe_id, user_id=user_id).first_or_404()
+    recipe.is_public = True
+    db.session.commit()
+    return jsonify(recipe.to_dict())
+
+
+@recipes_bp.post("/recipes/<int:recipe_id>/unpublish")
+@login_required
+def unpublish_recipe(recipe_id: int):
+    user_id = session["user_id"]
+    recipe = Recipe.query.filter_by(id=recipe_id, user_id=user_id).first_or_404()
+    recipe.is_public = False
+    db.session.commit()
+    return jsonify(recipe.to_dict())

@@ -7,6 +7,7 @@ import Overview from "./pages/Overview.jsx";
 import Recipes from "./pages/Recipes.jsx";
 import Planner from "./pages/Planner.jsx";
 import ShoppingList from "./pages/ShoppingList.jsx";
+import Community from "./pages/Community.jsx";
 
 export default function App() {
     return (
@@ -20,6 +21,7 @@ export default function App() {
                     <Route path="/recipes" element={<Recipes />} />
                     <Route path="/planner" element={<Planner />} />
                     <Route path="/shopping" element={<ShoppingList />} />
+                    <Route path="/community" element={<Community />} />
                 </Route>
             </Route>
 

@@ -54,6 +54,7 @@ def create_app() -> Flask:
     from .routes.recipes_import import recipes_import_bp
     from .routes.auth import auth_bp
     from .routes.overview import overview_bp
+    from .routes.public_recipes import public_recipes_bp
 
     app.register_blueprint(health_bp, url_prefix="/api")
     app.register_blueprint(recipes_bp, url_prefix="/api")
@@ -64,5 +65,6 @@ def create_app() -> Flask:
     app.register_blueprint(recipes_import_bp, url_prefix="/api")
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(overview_bp, url_prefix="/api")
+    app.register_blueprint(public_recipes_bp, url_prefix="/api")
 
     return app
